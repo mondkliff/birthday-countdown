@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обратный отсчет до 18.12.2029</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e1b4b);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.05em;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .target-date {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        .countdown-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+        }
+
+        .time-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 24px;
+            min-width: 140px;
+            flex: 1;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .time-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(129, 140, 248, 0.4);
+        }
+
+        .time-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: #ffffff;
+            line-height: 1;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+
+        .time-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        #expired-message {
+            display: none;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #34d399;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .countdown-container { gap: 12px; }
+            .time-card { padding: 16px; min-width: 120px; }
+            .time-value { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="countdown-wrapper">
+        <h1>Осталось времени</h1>
+        <div class="target-date">до 18 декабря 2029 года</div>
+
+        <div class="countdown-container" id="timer">
+            <div class="time-card">
+                <div class="time-value" id="days">00</div>
+                <div class="time-label">Дней</div>
+            </div>
+            <div class="time-card">
+                <div class="time-value" id="hours">00</div>
+                <div class="time-label">Часов</div>
+            </div>
+            <div class="time-card">
+                <div class="time-value" id="minutes">00</div>
+                <div class="time-label">Минут</div>
+            </div>
+            <div class="time-card">
+                <div class="time-value" id="seconds">00</div>
+                <div class="time-label">Секунд</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="expired-message">Время пришло! 18.12.2029</div>
+
+    <script>
+        // Целевая дата: 18 декабря 2029 года, 00:00:00
+        const targetDate = new Date('December 18, 2029 00:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            // Если дата наступила
+            if (difference <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('countdown-wrapper').style.display = 'none';
+                document.getElementById('expired-message').style.display = 'block';
+                return;
+            }
+
+            // Расчет времени
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            // Вывод на экран с добавлением ведущего нуля, если число меньше 10
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        // Запуск каждую секунду
+        const timerInterval = setInterval(updateCountdown, 1000);
+        
+        // Первичный вызов сразу при загрузке, чтобы не было задержки в 1 секунду
+        updateCountdown();
+    </script>
+</body>
+</html>
